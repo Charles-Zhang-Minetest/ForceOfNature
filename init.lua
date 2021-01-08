@@ -144,10 +144,12 @@ minetest.register_chatcommand("fn", {
 			pos.y = math.floor(pos.y)
 			-- Get radius and height
 			local _,_, radius, height = values:find("^([+-]?%d+)%s+([+-]?%d+)%s*$")
+			radius = tonumber(radius)
+			height = tonumber(height)
 			if radius > 50 then
 				print("Clearance area is too large, this might cause issue with inactive blocks.")
 			else
-				local targetLocs = ClearBlock(pos, tonumber(radius), tonumber(height))
+				local targetLocs = ClearBlock(pos, radius, height)
 				minetest.bulk_set_node(targetLocs, {name="air"})
 			end
         else
