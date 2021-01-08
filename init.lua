@@ -46,11 +46,13 @@ end
 
 local function PopulateLayer(pos, yoffset, radius, count)
 	local targetLocs = {}
-	for i = 1, 100 do
+	for i = 1, count do
 		dx = (math.random()*2-1) * radius
-		dy = (math.random()*2-1) * radius
+		dz = (math.random()*2-1) * radius
 		local target = {x=pos.x+dx, y=pos.y+yoffset, z=pos.z+dz}
-		if minetest.get_node(target).name ~= "air" then
+		local belowTarget = {x=pos.x+dx, y=pos.y+yoffset-1, z=pos.z+dz}
+		if minetest.get_node(target).name == "air" and
+			minetest.get_node(belowTarget).name ~= "air" then
 			table.insert(targetLocs, target)
 		end
 	end
@@ -130,7 +132,7 @@ minetest.register_chatcommand("fn", {
 			local values = params:sub(6)
 			-- Get current position
 			local pos = minetest.get_player_by_name(name):getpos()
-			pos.y = math.floor(pos.y)
+			pos.y = math.ceil(pos.y)
 			-- Get radius and name
 			local _,_, offset, radius, blockname, count = values:find("^([+-]?%d+)%s+([+-]?%d+)%s+([+-]?%S+)%s+([+-]?%d+)%s*$")
 			local targetLocs = PopulateLayer(pos, tonumber(offset), tonumber(radius), tonumber(count))
